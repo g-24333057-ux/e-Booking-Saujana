@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>e-Booking Saujana | SMK Saujana Impian</title>
+    
+    <!-- Dependencies -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Poppins', sans-serif; background: linear-gradient(135deg, #0F172A 0%, #1E3A5F 50%, #164E63 100%); min-height: 100vh; color: #f8fafc; }
+        .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(14, 165, 233, 0.2); border-radius: 1rem; color: #1e293b; }
+        .tab-active { border-bottom: 4px solid #0EA5E9; color: #0EA5E9; font-weight: 700; }
+        
+        /* Kalendar Styles */
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
+        .day-cell { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: 0.5rem; font-size: 0.75rem; font-weight: 700; transition: all 0.2s; cursor: pointer; }
+        
+        /* Slot Status Styles */
+        .time-slot-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 8px; }
+        .slot-available { background-color: #10B981; color: white; border: 1px solid #059669; }
+        .slot-available:hover { background-color: #059669; transform: scale(1.05); }
+        .slot-full { background-color: #EF4444 !important; color: white !important; cursor: not-allowed !important; opacity: 0.8; border: 1px solid #b91c1c; position: relative; }
+        .slot-full::after { content: "PENUH"; position: absolute; font-size: 7px; bottom: 1px; left: 50%; transform: translateX(-50%); font-weight: 900; }
+        .slot-selected { background-color: #0EA5E9 !important; color: white !important; ring: 3px solid #0369A1; transform: scale(1.05); }
+
+        /* Room Selection Styles */
+        .room-murni { background-color: #fef3c7; border: 2px solid #f59e0b; color: #92400e; }
+        .room-harmoni { background-color: #ede9fe; border: 2px solid #8b5cf6; color: #5b21b6; }
+
+        .slide-in { animation: slideIn 0.3s ease-out; }
+        @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+
+        /* Table Styles */
+        .custom-table th { background-color: #f8fafc; color: #475569; text-transform: uppercase; font-size: 0.65rem; font-weight: 800; padding: 12px; border-bottom: 2px solid #e2e8f0; }
+        .custom-table td { padding: 10px; font-size: 0.75rem; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+        
+        /* Button Validation Style */
+        #btn-submit:disabled { background-color: #94a3b8 !important; cursor: not-allowed !important; opacity: 0.5; transform: none !important; box-shadow: none !important; }
+    </style>
+</head>
+<body class="no-scrollbar pb-10">
+
+    <!-- HEADER -->
+    <header class="bg-[#0F172A] border-b-4 border-[#0EA5E9] p-4 sticky top-0 z-50 shadow-2xl">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-4 text-center md:text-left">
+            <img src="https://i.postimg.cc/SN3YKfvk/smksi.png" alt="Logo SMKSI" class="h-16 w-16">
+            <div class="flex-1">
+                <h1 class="text-2xl font-bold text-white tracking-tight uppercase">e-Booking Saujana</h1>
+                <p class="text-[#0EA5E9] text-[10px] font-bold uppercase tracking-widest">SMK Saujana Impian</p>
+            </div>
+            <div class="flex bg-slate-800 rounded-lg p-1 shadow-inner font-bold">
+                <button onclick="switchTab('booking')" id="btn-tab-booking" class="px-5 py-2 rounded-md text-xs transition-all tab-active">📅 TEMPAH</button>
+                <button onclick="switchTab('schedule')" id="btn-tab-schedule" class="px-5 py-2 rounded-md text-xs transition-all text-gray-400">📋 JADUAL</button>
+                <button onclick="switchTab('admin')" id="btn-tab-admin" class="px-5 py-2 rounded-md text-xs transition-all text-gray-400">🔐 ADMIN</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto p-4 md:p-6 mb-20">
+        
+        <!-- TAB 1: TEMPAHAN -->
+        <section id="tab-booking" class="tab-content block slide-in">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Kalendar -->
+                <div class="glass-card p-5 shadow-lg text-slate-800">
+                    <div class="flex justify-between items-center mb-4">
+                        <button onclick="changeMonth(-1)" class="p-2 bg-slate-100 hover:bg-slate-200 rounded-full transition-colors">◀</button>
+                        <h2 id="calendar-month" class="font-bold text-lg text-[#1E3A5F] uppercase tracking-tighter">MEMUAT...</h2>
+                        <button onclick="changeMonth(1)" class="p-2 bg-slate-100 hover:bg-slate-200 rounded-full transition-colors">▶</button>
+                    </div>
+                    <div class="calendar-grid text-center text-[10px] font-bold text-gray-400 mb-2 font-black uppercase">
+                        <span>AHAD</span><span>ISN</span><span>SEL</span><span>RAB</span><span>KHA</span><span>JUM</span><span>SAB</span>
+                    </div>
+                    <div id="calendar-days" class="calendar-grid"></div>
+                    <div class="mt-6 space-y-2 text-[10px] border-t pt-4 font-bold text-slate-500 uppercase tracking-tighter">
+                        <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-emerald-500"></span> HIJAU: Tersedia</div>
+                        <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-red-500"></span> MERAH: Penuh</div>
+                        <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-sky-500"></span> BIRU: Dipilih</div>
+                    </div>
+                </div>
+
+                <!-- Bilik & Masa -->
+                <div class="glass-card p-5 shadow-lg flex flex-col">
+                    <h2 class="font-bold text-[#1E3A5F] mb-4 uppercase text-center border-b pb-2">🏢 Pilihan Bilik</h2>
+                    <div class="space-y-3 mb-6 font-bold">
+                        <button onclick="selectRoom('Saujana Murni')" id="room-Murni" class="room-murni w-full p-4 rounded-xl text-left transition-all">
+                            <div class="font-bold text-lg">🏛️ Saujana Murni</div>
+                            <div class="text-[10px] uppercase opacity-80 font-black">Kapasiti: 50 Orang</div>
+                        </button>
+                        <button onclick="selectRoom('Saujana Harmoni')" id="room-Harmoni" class="room-harmoni w-full p-4 rounded-xl text-left transition-all">
+                            <div class="font-bold text-lg">🏢 Saujana Harmoni</div>
+                            <div class="text-[10px] uppercase opacity-80 font-black">Kapasiti: 100 Orang</div>
+                        </button>
+                    </div>
+                    <div id="time-container" class="flex-1">
+                        <div id="time-hint" class="text-center py-10 bg-slate-50 rounded-xl border-2 border-dashed border-slate-200">
+                            <p class="text-sm text-slate-400 font-medium italic">Sila pilih tarikh dan bilik</p>
+                        </div>
+                        <div id="slot-grid" class="time-slot-grid hidden"></div>
+                    </div>
+                </div>
+
+                <!-- Borang Tempahan -->
+                <div class="glass-card p-5 shadow-lg">
+                    <h2 class="font-bold text-[#1E3A5F] mb-4 uppercase text-center border-b pb-2">📝 Maklumat Guru</h2>
+                    <form id="booking-form" class="space-y-4" oninput="validateBookingForm()">
+                        <div>
+                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Nama Penuh Guru *</label>
+                            <input type="text" id="form-name" required placeholder="NAMA PENUH" class="w-full p-3 border-2 border-slate-100 rounded-xl outline-none uppercase text-sm font-bold bg-white focus:border-sky-500 text-slate-800">
+                        </div>
+                        
+                        <div>
+                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Tujuan Tempahan *</label>
+                            <select id="form-purpose" required class="w-full p-3 border-2 border-slate-100 rounded-xl outline-none text-sm bg-white font-bold focus:border-sky-500 text-slate-800">
+                                <option value="">-- PILIH TUJUAN --</option>
+                                <option>BENGKEL</option><option>CERAMAH</option><option>KARNIVAL</option><option>KELAS GANTI/TAMBAHAN</option><option>LATIHAN DALAM PERKHIDMATAN (LDP)</option><option>MAJLIS RASMI</option><option>MESYUARAT</option><option>PDPC</option><option>PEPERIKSAAN / PENTAKSIRAN</option><option>PERTANDINGAN</option><option>TAKLIMAT</option><option>LAIN-LAIN</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Unit / Bidang *</label>
+                            <select id="form-unit" required class="w-full p-3 border-2 border-slate-100 rounded-xl outline-none text-sm bg-white font-bold focus:border-sky-500 text-slate-800">
+                                <option value="">-- PILIH UNIT/BIDANG --</option>
+                                <option>PENGURUSAN</option><option>KURIKULUM</option><option>HEM</option><option>KOKURIKULUM</option><option>BAHASA</option><option>SAINS & MATEMATIK</option><option>TEKNIK & VOKASIONAL</option><option>KEMANUSIAN</option><option>ASK</option><option>BAHASA ARAB</option><option>BAHASA INGGERIS</option><option>BAHASA JERMAN</option><option>BAHASA MELAYU</option><option>BAHASA TAMIL</option><option>BIOLOGI</option><option>EKONOMI</option><option>FIZIK</option><option>GEOGRAFI</option><option>KESUSASTERAAN MELAYU KOMUNIKATIF</option><option>KIMIA</option><option>MATEMATIK</option><option>MATEMATIK TAMBAHAN</option><option>PENDIDIKAN AL QURAN & SUNNAH</option><option>PENDIDIKAN ISLAM</option><option>PENDIDIKAN MORAL</option><option>PENDIDIKAN SYARIAH ISLAMIAH</option><option>PERNIAGAAN</option><option>PJPK</option><option>PRINSIP PERAKAUNAN</option><option>PSV</option><option>RBT</option><option>SAINS</option><option>SAINS KOMPUTER</option><option>SAINS RUMAH TANGGA</option><option>SAINS SUKAN</option><option>SEJARAH</option><option>TASAWWUR ISLAM</option><option>LAIN-LAIN</option>
+                            </select>
+                        </div>
+
+                        <div id="booking-summary" class="bg-slate-50 p-3 rounded-xl border border-slate-200">
+                            <p id="summary-text" class="text-[10px] font-bold text-slate-400 uppercase italic">Sila pilih Tarikh, Bilik, & Slot Masa</p>
+                        </div>
+                        
+                        <button type="submit" id="btn-submit" disabled class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-4 rounded-xl shadow-lg transition-all active:scale-95">
+                            ✅ SAHKAN TEMPAHAN
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: JADUAL -->
+        <section id="tab-schedule" class="tab-content hidden slide-in text-slate-800">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 text-center">
+                <div class="glass-card p-6 border-b-4 border-sky-500 shadow-md"><p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Jumlah</p><p id="stat-total" class="text-4xl font-black text-sky-600">0</p></div>
+                <div class="glass-card p-6 border-b-4 border-amber-500 shadow-md"><p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Murni</p><p id="stat-murni" class="text-4xl font-black text-amber-600">0</p></div>
+                <div class="glass-card p-6 border-b-4 border-purple-500 shadow-md"><p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Harmoni</p><p id="stat-harmoni" class="text-4xl font-black text-purple-600">0</p></div>
+            </div>
+            <div class="glass-card p-4 mb-4 flex flex-col md:flex-row gap-4 shadow-md">
+                <input type="text" id="filter-name" placeholder="🔍 Cari Nama Guru..." class="flex-1 p-3 border-2 border-slate-100 rounded-xl outline-none text-sm font-bold" oninput="renderScheduleTable()">
+                <select id="filter-unit" class="w-full md:w-64 p-3 border-2 border-slate-100 rounded-xl outline-none text-sm bg-white font-bold" onchange="renderScheduleTable()">
+                    <option value="">-- SEMUA UNIT --</option>
+                    <option>PENGURUSAN</option><option>KURIKULUM</option><option>HEM</option><option>KOKURIKULUM</option><option>BAHASA</option><option>SAINS & MATEMATIK</option><option>TEKNIK & VOKASIONAL</option><option>KEMANUSIAN</option><option>LAIN-LAIN</option>
+                </select>
+            </div>
+            <div class="glass-card p-2 overflow-x-auto no-scrollbar shadow-xl">
+                <table class="w-full custom-table text-left">
+                    <thead>
+                        <tr><th>No.</th><th>Nama Guru</th><th>Tarikh</th><th>Bilik</th><th>Masa</th><th>Tujuan</th><th>Unit</th></tr>
+                    </thead>
+                    <tbody id="schedule-table-body" class="bg-white"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- TAB 3: ADMIN -->
+        <section id="tab-admin" class="tab-content hidden slide-in text-slate-800">
+            <div id="admin-login" class="max-w-md mx-auto glass-card p-10 text-center mt-10 shadow-2xl">
+                <div class="text-5xl mb-6">🔐</div>
+                <h2 class="font-black uppercase mb-4 text-[#1E3A5F]">Akses Pentadbir</h2>
+                <input type="password" id="admin-pass" class="w-full p-4 border-2 rounded-xl mb-4 text-center font-bold tracking-widest outline-none focus:border-sky-500" placeholder="••••">
+                <button onclick="loginAdmin()" class="w-full bg-[#1E3A5F] text-white font-bold py-4 rounded-xl shadow-lg hover:bg-slate-900 transition-all">LOG MASUK</button>
+            </div>
+            <div id="admin-panel" class="hidden space-y-4">
+                <div class="flex justify-between items-center bg-white/10 p-4 rounded-xl backdrop-blur-md border border-white/20 text-white font-bold">
+                    <h2 class="uppercase tracking-widest">🛠️ Pengurusan Tempahan</h2>
+                    <button onclick="logoutAdmin()" class="bg-red-500 px-6 py-2 rounded-lg font-black shadow-lg">KELUAR</button>
+                </div>
+                <div class="glass-card p-6 overflow-x-auto no-scrollbar shadow-2xl">
+                    <table class="w-full text-left text-[11px]">
+                        <thead class="bg-slate-100 uppercase font-black">
+                            <tr><th>Guru</th><th>Tarikh</th><th>Bilik</th><th>Masa</th><th>Unit</th><th>Aksi</th></tr>
+                        </thead>
+                        <tbody id="admin-table-body" class="divide-y"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="fixed bottom-0 w-full bg-[#0F172A] p-4 text-center border-t border-sky-900 z-40">
+        <p class="text-[9px] text-sky-400 font-bold uppercase tracking-[0.2em]">🚀 Powered by mai_apps | SMK Saujana Impian</p>
+    </footer>
+
+    <!-- MODAL -->
+    <div id="modal-container" class="fixed inset-0 bg-black/70 z-[100] flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl p-8 max-w-sm w-full text-center shadow-2xl slide-in text-slate-800 font-bold">
+            <h3 id="modal-title" class="text-2xl font-black mb-2 uppercase">Mesej</h3>
+            <p id="modal-msg" class="text-slate-500 text-sm mb-8 leading-relaxed font-medium"></p>
+            <div class="flex gap-3">
+                <button onclick="closeModal()" class="flex-1 py-3 bg-slate-100 text-slate-600 rounded-2xl font-bold hover:bg-slate-200 transition-all">TUTUP</button>
+                <button id="modal-confirm-btn" class="flex-1 py-3 bg-red-500 text-white rounded-2xl font-bold hidden shadow-lg">YA, PADAM</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbw7A_MjD1hkIqNh6nHAIqqV_L-b3qx5TLHkTQVtMiWTVrDXxv74Pr_1RwS0TXGs18Z8/exec"; 
+        const ADMIN_PASS = "admin6877";
+
+        const HOURS = [];
+        for(let h=7; h<19; h++) { 
+            HOURS.push(`${h.toString().padStart(2,'0')}:30-${(h+1).toString().padStart(2,'0')}:00`);
+            HOURS.push(`${(h+1).toString().padStart(2,'0')}:00-${(h+1).toString().padStart(2,'0')}:30`);
+        }
+
+        let allData = [];
+        let selectedDate = null, selectedRoom = null, selectedSlots = [];
+        let currentCalDate = new Date(), isAdmin = false;
+
+        async function fetchData() {
+            try {
+                const response = await fetch(WEB_APP_URL + "?t=" + new Date().getTime());
+                allData = await response.json();
+                renderUI();
+            } catch (e) { console.error("Recall data gagal."); }
+        }
+
+        function renderUI() { renderCalendar(); renderSlots(); updateScoreboard(); renderScheduleTable(); renderAdminTable(); validateBookingForm(); }
+
+        function renderCalendar() {
+            const container = document.getElementById('calendar-days');
+            container.innerHTML = '';
+            const y = currentCalDate.getFullYear(), m = currentCalDate.getMonth();
+            const today = new Date(); today.setHours(0,0,0,0);
+            const monthNames = ["JANUARI", "FEBRUARI", "MAC", "APRIL", "MEI", "JUN", "JULAI", "OGOS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DISEMBER"];
+            document.getElementById('calendar-month').innerText = `${monthNames[m]} ${y}`;
+            const first = new Date(y, m, 1).getDay(), last = new Date(y, m + 1, 0).getDate();
+            for(let i=0; i<first; i++) container.innerHTML += `<div></div>`;
+            const maxDate = new Date(); maxDate.setMonth(maxDate.getMonth() + 3);
+            for(let d=1; d<=last; d++) {
+                const dObj = new Date(y, m, d), dStr = formatDate(dObj);
+                const isPast = dObj < today, isFar = dObj > maxDate;
+                const totalOnDay = allData.filter(x => x.date.toString().trim() === dStr).length;
+                let bg = 'bg-emerald-50 text-emerald-600', cur = 'cursor-pointer', click = `onclick="selectDate('${dStr}')"`;
+                if(isPast || isFar) { bg = 'bg-slate-100 text-slate-300'; cur = 'cursor-not-allowed'; click = ''; }
+                else if(totalOnDay >= 48) bg = 'bg-red-100 text-red-500';
+                if(selectedDate === dStr) bg = 'bg-sky-500 text-white shadow-lg scale-110 z-10';
+                container.innerHTML += `<div ${click} class="day-cell ${bg} ${cur}">${d}</div>`;
+            }
+        }
+
+        function changeMonth(dir) { currentCalDate.setMonth(currentCalDate.getMonth() + dir); renderCalendar(); }
+        function selectDate(d) { selectedDate = d; selectedSlots = []; renderUI(); }
+        function selectRoom(r) { 
+            selectedRoom = r; selectedSlots = []; 
+            document.getElementById('time-hint').classList.add('hidden');
+            document.getElementById('slot-grid').classList.remove('hidden');
+            ['Murni', 'Harmoni'].forEach(id => {
+                const btn = document.getElementById(`room-${id}`);
+                btn.classList.toggle('ring-4', r.includes(id));
+                btn.classList.toggle('ring-sky-400', r.includes(id));
+            });
+            renderUI(); 
+        }
+
+        function renderSlots() {
+            const grid = document.getElementById('slot-grid');
+            grid.innerHTML = '';
+            if(!selectedDate || !selectedRoom) return;
+            HOURS.forEach(slot => {
+                const isTaken = allData.some(x => 
+                    x.date.toString().trim() === selectedDate.toString().trim() && 
+                    x.room.toString().trim() === selectedRoom.toString().trim() && 
+                    x.time.toString().split(', ').map(t => t.trim()).includes(slot.trim())
+                );
+                const isSelected = selectedSlots.includes(slot);
+                let cls = isTaken ? 'slot-full' : (isSelected ? 'slot-selected' : 'slot-available');
+                let click = isTaken ? '' : `onclick="toggleSlot('${slot}')"`;
+                grid.innerHTML += `<div ${click} class="p-2 text-[9px] text-center font-bold rounded-lg border transition-all ${cls}">${slot}</div>`;
+            });
+            updateSummaryUI();
+        }
+
+        function toggleSlot(s) {
+            if(selectedSlots.includes(s)) selectedSlots = selectedSlots.filter(x => x !== s);
+            else selectedSlots.push(s);
+            renderSlots();
+            validateBookingForm();
+        }
+
+        // --- VALIDATION LOGIC ---
+        function validateBookingForm() {
+            const name = document.getElementById('form-name').value.trim();
+            const purpose = document.getElementById('form-purpose').value;
+            const unit = document.getElementById('form-unit').value;
+
+            // Memeriksa adakah data kritikal sudah lengkap
+            // IC dan Telefon diabaikan daripada sekatan (blok)
+            const isComplete = (name !== "") && (purpose !== "") && (unit !== "") && 
+                               (selectedDate !== null) && (selectedRoom !== null) && (selectedSlots.length > 0);
+
+            document.getElementById('btn-submit').disabled = !isComplete;
+            updateSummaryUI();
+        }
+
+        function updateSummaryUI() {
+            const txt = document.getElementById('summary-text');
+            if(!selectedDate) txt.innerText = "⚠️ Sila pilih Tarikh pada Kalendar";
+            else if(!selectedRoom) txt.innerText = "⚠️ Sila pilih Bilik (Murni/Harmoni)";
+            else if(selectedSlots.length === 0) txt.innerText = "⚠️ Sila pilih Slot Masa";
+            else {
+                txt.innerHTML = `<span class="text-sky-600 font-black">${selectedDate}</span> | <span class="text-sky-600 font-black">${selectedRoom}</span> | <span class="text-sky-600 font-black">${selectedSlots.length} SLOT PILIHAN</span>`;
+            }
+        }
+
+        document.getElementById('booking-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('form-name').value.toUpperCase();
+            const monthYear = selectedDate.substring(3);
+            const monthlyCount = allData.filter(x => x.name === name && x.date.includes(monthYear)).length;
+            if(monthlyCount >= 4) return showModal("⚠️ Had", "Maksimum 4 tempahan sebulan bagi setiap guru.");
+            
+            const btn = document.getElementById('btn-submit');
+            btn.disabled = true; btn.innerText = "MENYIMPAN...";
+            
+            const payload = { 
+                action: "CREATE", 
+                data: { 
+                    id: Date.now().toString(), name: name, 
+                    phone: "-", ic: "-", 
+                    purpose: document.getElementById('form-purpose').value, 
+                    unit: document.getElementById('form-unit').value, 
+                    date: selectedDate, room: selectedRoom, 
+                    time: selectedSlots.join(', '), timeSlots: selectedSlots.length, 
+                    createdAt: new Date().toISOString() 
+                } 
+            };
+            
+            try {
+                const res = await fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify(payload) });
+                const result = await res.json();
+                if(result.isOk) { showModal("✅ Berjaya", "Tempahan disimpan ke Google Sheet!"); resetForm(); fetchData(); }
+                else { showModal("❌ Gagal", result.msg || "Slot sudah diambil."); fetchData(); }
+            } catch (e) { showModal("❌ Ralat", "Masalah sambungan dikesan."); }
+            finally { btn.innerText = "✅ SAHKAN TEMPAHAN"; validateBookingForm(); }
+        };
+
+        function resetForm() { document.getElementById('booking-form').reset(); selectedDate = null; selectedRoom = null; selectedSlots = []; document.getElementById('slot-grid').classList.add('hidden'); document.getElementById('time-hint').classList.remove('hidden'); renderUI(); }
+        function updateScoreboard() { document.getElementById('stat-total').innerText = allData.length; document.getElementById('stat-murni').innerText = allData.filter(x => x.room === 'Saujana Murni').length; document.getElementById('stat-harmoni').innerText = allData.filter(x => x.room === 'Saujana Harmoni').length; }
+        
+        function renderScheduleTable() {
+            const tbody = document.getElementById('schedule-table-body');
+            const nameF = document.getElementById('filter-name').value.toLowerCase();
+            const unitF = document.getElementById('filter-unit').value;
+            const filtered = allData.filter(x => x.name.toLowerCase().includes(nameF) && (unitF === "" || x.unit === unitF)).sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+            tbody.innerHTML = filtered.map((x, i) => `<tr><td>${i+1}</td><td class="font-bold uppercase">${x.name}</td><td>${x.date}</td><td><span class="px-2 py-1 rounded text-[9px] font-bold ${x.room==='Saujana Murni'?'room-murni':'room-harmoni'} uppercase">${x.room}</span></td><td class="truncate max-w-[100px] text-slate-500 font-medium">${x.time}</td><td class="font-bold text-sky-700 uppercase">${x.purpose}</td><td class="uppercase text-slate-400 font-bold">${x.unit}</td></tr>`).join('');
+        }
+
+        function loginAdmin() { if(document.getElementById('admin-pass').value === ADMIN_PASS) { isAdmin = true; document.getElementById('admin-login').classList.add('hidden'); document.getElementById('admin-panel').classList.remove('hidden'); renderAdminTable(); } else { showModal("❌ Gagal", "Kata laluan admin salah."); } }
+        function logoutAdmin() { isAdmin = false; document.getElementById('admin-login').classList.remove('hidden'); document.getElementById('admin-panel').classList.add('hidden'); }
+        function renderAdminTable() {
+            if(!isAdmin) return;
+            document.getElementById('admin-table-body').innerHTML = allData.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt)).map(x => `<tr><td class="font-bold uppercase text-[#1E3A5F]">${x.name}</td><td>${x.date}</td><td class="font-bold text-sky-600 uppercase">${x.room}</td><td class="truncate max-w-[100px]">${x.time}</td><td class="uppercase font-bold text-slate-400">${x.unit}</td><td><button onclick="askDelete('${x.id}')" class="text-red-500 font-bold hover:underline">PADAM</button></td></tr>`).join('');
+        }
+
+        let delId = null;
+        function askDelete(id) { delId = id; showModal('🗑️ Padam', 'Adakah anda pasti mahu membatalkan tempahan ini?', 'text-slate-800', true); }
+        async function confirmDelete() { closeModal(); await fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify({action: "DELETE", id: delId}) }); fetchData(); }
+        function switchTab(id) { document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden')); document.getElementById(`tab-${id}`).classList.remove('hidden'); ['booking','schedule','admin'].forEach(t => document.getElementById('btn-tab-'+t).className = (t===id) ? "px-5 py-2 rounded-md text-xs font-bold transition-all tab-active shadow-md" : "px-5 py-2 rounded-md text-xs font-bold transition-all text-gray-400"); }
+        function formatDate(d) { return `${d.getDate().toString().padStart(2,'0')}/${(d.getMonth()+1).toString().padStart(2,'0')}/${d.getFullYear()}`; }
+        function showModal(t, m, c = 'text-slate-800', confirm = false) { document.getElementById('modal-title').innerText = t; document.getElementById('modal-title').className = `text-2xl font-bold mb-2 ${c}`; document.getElementById('modal-msg').innerText = m; const b = document.getElementById('modal-confirm-btn'); if(confirm) { b.classList.remove('hidden'); b.onclick = confirmDelete; } else b.classList.add('hidden'); document.getElementById('modal-container').classList.remove('hidden'); }
+        function closeModal() { document.getElementById('modal-container').classList.add('hidden'); }
+        fetchData();
+    </script>
+</body>
+</html>
