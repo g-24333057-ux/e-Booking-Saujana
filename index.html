@@ -14,18 +14,15 @@
         .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(14, 165, 233, 0.2); border-radius: 1rem; color: #1e293b; }
         .tab-active { border-bottom: 4px solid #0EA5E9; color: #0EA5E9; font-weight: 700; }
         
-        /* Calendar Styles */
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
         .day-cell { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: 0.5rem; font-size: 0.75rem; font-weight: 700; transition: all 0.2s; cursor: pointer; }
         
-        /* Time Slot Styles */
         .time-slot-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 8px; }
         .slot-available { background-color: #10B981; color: white; border: 1px solid #059669; }
         .slot-full { background-color: #EF4444 !important; color: white !important; cursor: not-allowed !important; opacity: 0.8; border: 1px solid #b91c1c; position: relative; }
         .slot-full::after { content: "PENUH"; position: absolute; font-size: 7px; bottom: 1px; left: 50%; transform: translateX(-50%); font-weight: 900; }
-        .slot-selected { background-color: #0EA5E9 !important; color: white !important; ring: 3px solid #0369A1; transform: scale(1.05); }
+        .slot-selected { background-color: #0EA5E9 !important; ring: 3px solid #0369A1; transform: scale(1.05); }
 
-        /* Room Selection Styles */
         .room-murni { background-color: #fef3c7; border: 2px solid #f59e0b; color: #92400e; }
         .room-harmoni { background-color: #ede9fe; border: 2px solid #8b5cf6; color: #5b21b6; }
 
@@ -33,12 +30,9 @@
         @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         .no-scrollbar::-webkit-scrollbar { display: none; }
 
-        /* Table Styles */
         .custom-table th { background-color: #f8fafc; color: #475569; text-transform: uppercase; font-size: 0.65rem; font-weight: 800; padding: 12px; border-bottom: 2px solid #e2e8f0; }
         .custom-table td { padding: 10px; font-size: 0.75rem; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
-        
-        /* Validation State */
-        #btn-submit:disabled { background-color: #94a3b8 !important; opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+        #btn-submit:disabled { background-color: #94a3b8 !important; opacity: 0.5; cursor: not-allowed; }
     </style>
 </head>
 <body class="no-scrollbar pb-10">
@@ -66,12 +60,12 @@
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <!-- Kalendar -->
                 <div class="glass-card p-5 shadow-lg">
-                    <div class="flex justify-between items-center mb-4">
-                        <button onclick="changeMonth(-1)" class="p-2 bg-slate-100 hover:bg-slate-200 rounded-full transition-colors text-slate-800 font-bold">◀</button>
+                    <div class="flex justify-between items-center mb-4 text-slate-800">
+                        <button onclick="changeMonth(-1)" class="p-2 bg-slate-100 hover:bg-slate-200 rounded-full transition-colors font-bold">◀</button>
                         <h2 id="calendar-month" class="font-bold text-lg text-[#1E3A5F] ">downloading...</h2>
-                        <button onclick="changeMonth(1)" class="p-2 bg-slate-100 hover:bg-slate-200 rounded-full transition-colors text-slate-800 font-bold">▶</button>
+                        <button onclick="changeMonth(1)" class="p-2 bg-slate-100 hover:bg-slate-200 rounded-full transition-colors font-bold">▶</button>
                     </div>
-                    <div class="calendar-grid text-center text-[10px] font-bold text-gray-400 mb-2 uppercase">
+                    <div class="calendar-grid text-center text-[10px] font-bold text-gray-400 mb-2 uppercase font-black">
                         <span>AHAD</span><span>ISN</span><span>SEL</span><span>RAB</span><span>KHA</span><span>JUM</span><span>SAB</span>
                     </div>
                     <div id="calendar-days" class="calendar-grid"></div>
@@ -87,11 +81,11 @@
                     <h2 class="font-bold text-[#1E3A5F] mb-4 uppercase text-center border-b pb-2 tracking-widest">🏢 Pilihan Bilik</h2>
                     <div class="space-y-3 mb-6 font-bold">
                         <button onclick="selectRoom('Saujana Murni')" id="room-Murni" class="room-murni w-full p-4 rounded-xl text-left transition-all">
-                            <div class="font-bold text-lg">🏛️ Saujana Murni</div>
+                            <div class="font-bold text-lg tracking-tight">🏛️ Saujana Murni</div>
                             <div class="text-[10px] uppercase opacity-80 font-black">Kapasiti: 50 Orang</div>
                         </button>
                         <button onclick="selectRoom('Saujana Harmoni')" id="room-Harmoni" class="room-harmoni w-full p-4 rounded-xl text-left transition-all">
-                            <div class="font-bold text-lg">🏢 Saujana Harmoni</div>
+                            <div class="font-bold text-lg tracking-tight">🏢 Saujana Harmoni</div>
                             <div class="text-[10px] uppercase opacity-80 font-black">Kapasiti: 100 Orang</div>
                         </button>
                     </div>
@@ -108,13 +102,13 @@
                         <input type="text" id="form-name" required placeholder="NAMA PENUH" class="w-full p-3 border-2 border-slate-100 rounded-xl outline-none uppercase text-sm font-bold bg-white focus:border-sky-500 shadow-sm text-slate-800">
                         <select id="form-purpose" required class="w-full p-3 border-2 border-slate-100 rounded-xl outline-none text-sm bg-white font-bold focus:border-sky-500 shadow-sm text-slate-800">
                             <option value="">-- PILIH TUJUAN --</option>
-                            <option>BENGKEL</option><option>CERAMAH</option><option>KARNIVAL</option><option>KELAS GANTI/TAMBAHAN</option><option>LDP</option><option>MAJLIS RASMI</option><option>MESYUARAT</option><option>PDPC</option><option>PEPERIKSAAN / PENTAKSIRAN</option><option>PERTANDINGAN</option><option>TAKLIMAT</option><option>LAIN-LAIN</option>
+                            <option>BENGKEL</option><option>CERAMAH</option><option>KARNIVAL</option><option>KELAS GANTI/TAMBAHAN</option><option>LATIHAN DALAM PERKHIDMATAN (LDP)</option><option>MAJLIS RASMI</option><option>MESYUARAT</option><option>PDPC</option><option>PEPERIKSAAN / PENTAKSIRAN</option><option>PERTANDINGAN</option><option>TAKLIMAT</option><option>LAIN-LAIN</option>
                         </select>
                         <select id="form-unit" required class="w-full p-3 border-2 border-slate-100 rounded-xl outline-none text-sm bg-white font-bold focus:border-sky-500 shadow-sm text-slate-800">
                             <option value="">-- PILIH UNIT/BIDANG --</option>
-                            <option>PENGURUSAN</option><option>KURIKULUM</option><option>HEM</option><option>KOKURIKULUM</option><option>BAHASA</option><option>SAINS & MATEMATIK</option><option>TEKNIK & VOKASIONAL</option><option>KEMANUSIAN</option><option>LAIN-LAIN</option>
+                            <option>PENGURUSAN</option><option>KURIKULUM</option><option>HEM</option><option>KOKURIKULUM</option><option>BAHASA</option><option>SAINS & MATEMATIK</option><option>TEKNIK & VOKASIONAL</option><option>KEMANUSIAN</option><option>ASK</option><option>BAHASA ARAB</option><option>BAHASA INGGERIS</option><option>BAHASA JERMAN</option><option>BAHASA MELAYU</option><option>BAHASA TAMIL</option><option>BIOLOGI</option><option>EKONOMI</option><option>FIZIK</option><option>GEOGRAFI</option><option>KMK</option><option>KIMIA</option><option>MATEMATIK</option><option>MATEMATIK TAMBAHAN</option><option>PENDIDIKAN AL QURAN & SUNNAH</option><option>PENDIDIKAN ISLAM</option><option>PENDIDIKAN MORAL</option><option>PENDIDIKAN SYARIAH ISLAMIAH</option><option>PERNIAGAAN</option><option>PJPK</option><option>PRINSIP PERAKAUNAN</option><option>PSV</option><option>RBT</option><option>SAINS</option><option>SAINS KOMPUTER</option><option>SAINS RUMAH TANGGA</option><option>SAINS SUKAN</option><option>SEJARAH</option><option>TASAWWUR ISLAM</option><option>LAIN-LAIN</option>
                         </select>
-                        <div id="booking-summary" class="bg-slate-50 p-3 rounded-xl border">
+                        <div id="booking-summary" class="bg-slate-50 p-3 rounded-xl border border-slate-200">
                             <p id="summary-text" class="text-[10px] font-bold text-slate-400 uppercase italic text-center">Lengkapkan borang tempahan</p>
                         </div>
                         <button type="submit" id="btn-submit" disabled class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-4 rounded-xl shadow-lg transition-all active:scale-95">✅ SAHKAN TEMPAHAN</button>
@@ -123,9 +117,9 @@
             </div>
         </section>
 
-        <!-- TAB 2: JADUAL TEMPAHAN -->
+        <!-- TAB 2: JADUAL -->
         <section id="tab-schedule" class="tab-content hidden slide-in text-slate-800">
-            <div class="glass-card p-4 mb-4 flex flex-col md:flex-row gap-4 shadow-md">
+            <div class="glass-card p-4 mb-4 flex flex-col md:flex-row gap-4 shadow-md text-slate-800">
                 <input type="text" id="filter-name" placeholder="🔍 Cari Nama Guru..." class="flex-1 p-3 border-2 border-slate-100 rounded-xl outline-none text-sm font-bold" oninput="renderScheduleTable()">
                 <select id="filter-unit" class="w-full md:w-64 p-3 border-2 border-slate-100 rounded-xl outline-none text-sm bg-white font-bold" onchange="renderScheduleTable()">
                     <option value="">-- SEMUA UNIT --</option>
@@ -135,7 +129,7 @@
             <div class="glass-card p-2 overflow-x-auto no-scrollbar shadow-xl">
                 <table class="w-full custom-table text-left">
                     <thead><tr><th>No.</th><th>Nama Guru</th><th>Tarikh</th><th>Bilik</th><th>Masa</th><th>Status</th><th>Unit</th></tr></thead>
-                    <tbody id="schedule-table-body" class="bg-white text-slate-800"></tbody>
+                    <tbody id="schedule-table-body" class="bg-white"></tbody>
                 </table>
             </div>
         </section>
@@ -148,9 +142,8 @@
                 <input type="password" id="admin-pass" class="w-full p-4 border-2 rounded-xl mb-4 text-center font-bold tracking-widest outline-none focus:border-sky-500 shadow-inner" placeholder="••••">
                 <button onclick="loginAdmin()" class="w-full bg-[#1E3A5F] text-white font-bold py-4 rounded-xl shadow-lg hover:bg-slate-900 transition-all">LOG MASUK</button>
             </div>
-            
             <div id="admin-panel" class="hidden space-y-4">
-                <!-- Scoreboard di Admin -->
+                <!-- Admin Scoreboard -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 text-center">
                     <div class="glass-card p-6 border-b-4 border-sky-500 shadow-md"><p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Jumlah Aktif</p><p id="admin-stat-total" class="text-4xl font-black text-sky-600">0</p></div>
                     <div class="glass-card p-6 border-b-4 border-amber-500 shadow-md"><p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Murni</p><p id="admin-stat-murni" class="text-4xl font-black text-amber-600">0</p></div>
@@ -159,16 +152,15 @@
 
                 <div class="flex flex-col md:flex-row justify-between items-center bg-white/10 p-4 rounded-xl backdrop-blur-md border border-white/20 text-white font-bold gap-4">
                     <div class="flex flex-1 gap-2 w-full">
-                        <input type="text" id="admin-filter-name" placeholder="🔍 Cari Nama Guru..." class="flex-1 p-2 rounded-lg text-slate-800 text-xs outline-none" oninput="renderAdminTable()">
+                        <input type="text" id="admin-filter-name" placeholder="🔍 Tapis Nama..." class="flex-1 p-2 rounded-lg text-slate-800 text-xs outline-none" oninput="renderAdminTable()">
                         <select id="admin-filter-status" class="p-2 rounded-lg text-slate-800 text-xs outline-none" onchange="renderAdminTable()">
                             <option value="">SEMUA STATUS</option>
                             <option value="AKTIF">AKTIF</option>
                             <option value="DIBATALKAN">DIBATALKAN</option>
                         </select>
                     </div>
-                    <button onclick="logoutAdmin()" class="bg-red-500 px-6 py-2 rounded-lg font-black shadow-lg uppercase text-xs hover:bg-red-600 transition-all">Keluar</button>
+                    <button onclick="logoutAdmin()" class="bg-red-500 px-6 py-2 rounded-lg font-black shadow-lg uppercase text-xs hover:bg-red-600 transition-colors">Keluar</button>
                 </div>
-
                 <div class="glass-card p-6 overflow-x-auto no-scrollbar shadow-xl">
                     <table class="w-full text-left text-[11px]">
                         <thead class="bg-slate-100 uppercase font-black text-slate-500"><tr><th>Guru</th><th>Tarikh</th><th>Bilik</th><th>Masa</th><th>Status</th><th>Aksi</th></tr></thead>
@@ -189,7 +181,7 @@
             <h3 id="modal-title" class="text-2xl font-black mb-2 uppercase">Mesej</h3>
             <p id="modal-msg" class="text-slate-500 text-sm mb-8 leading-relaxed font-medium"></p>
             <div class="flex gap-3">
-                <button onclick="closeModal()" class="flex-1 py-3 bg-slate-100 text-slate-600 rounded-2xl font-bold hover:bg-slate-200 transition-all uppercase text-xs">Tutup</button>
+                <button onclick="closeModal()" class="flex-1 py-3 bg-slate-100 text-slate-600 rounded-2xl font-bold uppercase text-xs">Tutup</button>
                 <button id="modal-confirm-btn" class="flex-1 py-3 bg-red-500 text-white rounded-2xl font-bold hidden shadow-lg uppercase text-xs">SAHKAN BATAL</button>
             </div>
         </div>
@@ -243,22 +235,14 @@
 
         function selectDate(d) { selectedDate = d; selectedSlots = []; renderUI(); }
         function changeMonth(dir) { currentCalDate.setMonth(currentCalDate.getMonth() + dir); renderCalendar(); }
-        function selectRoom(r) { 
-            selectedRoom = r; selectedSlots = []; 
-            document.getElementById('time-hint').classList.add('hidden');
-            document.getElementById('slot-grid').classList.remove('hidden');
-            ['Murni', 'Harmoni'].forEach(id => document.getElementById(`room-${id}`).classList.toggle('ring-4', r.includes(id)));
-            renderUI(); 
-        }
+        function selectRoom(r) { selectedRoom = r; selectedSlots = []; document.getElementById('time-hint').classList.add('hidden'); document.getElementById('slot-grid').classList.remove('hidden'); ['Murni', 'Harmoni'].forEach(id => document.getElementById(`room-${id}`).classList.toggle('ring-4', r.includes(id))); renderUI(); }
 
         function renderSlots() {
             const grid = document.getElementById('slot-grid');
             grid.innerHTML = '';
             if(!selectedDate || !selectedRoom) return;
             HOURS.forEach(slot => {
-                const isTaken = allData.some(x => 
-                    x.status !== "DIBATALKAN" && x.date === selectedDate && x.room === selectedRoom && x.time.toString().split(', ').includes(slot)
-                );
+                const isTaken = allData.some(x => x.status !== "DIBATALKAN" && x.date === selectedDate && x.room === selectedRoom && x.time.toString().split(', ').includes(slot));
                 const isSelected = selectedSlots.includes(slot);
                 let cls = isTaken ? 'slot-full' : (isSelected ? 'slot-selected' : 'slot-available');
                 let click = isTaken ? '' : `onclick="toggleSlot('${slot}')"`;
@@ -312,7 +296,6 @@
             const total = active.length;
             const murni = active.filter(x => x.room === 'Saujana Murni').length;
             const harmoni = active.filter(x => x.room === 'Saujana Harmoni').length;
-
             if (document.getElementById('admin-stat-total')) {
                 document.getElementById('admin-stat-total').innerText = total;
                 document.getElementById('admin-stat-murni').innerText = murni;
@@ -325,7 +308,7 @@
             const nameF = document.getElementById('filter-name').value.toLowerCase();
             const unitF = document.getElementById('filter-unit').value;
             const filtered = allData.filter(x => x.name.toLowerCase().includes(nameF) && (unitF === "" || x.unit === unitF)).sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
-            tbody.innerHTML = filtered.map((x, i) => `<tr><td>${i+1}</td><td class="font-bold uppercase">${x.name}</td><td>${x.date}</td><td><span class="px-2 py-1 rounded text-[9px] font-bold ${x.room==='Saujana Murni'?'room-murni':'room-harmoni'} uppercase">${x.room}</span></td><td>${x.time}</td><td><span class="font-black ${x.status==='DIBATALKAN'?'text-red-500':'text-emerald-500'}">${x.status || 'DISAHKAN'}</span></td><td class="uppercase font-bold text-slate-400">${x.unit}</td></tr>`).join('');
+            tbody.innerHTML = filtered.map((x, i) => `<tr><td>${i+1}</td><td class="font-bold uppercase text-slate-800">${x.name}</td><td>${x.date}</td><td><span class="px-2 py-1 rounded text-[9px] font-bold ${x.room==='Saujana Murni'?'room-murni':'room-harmoni'} uppercase">${x.room}</span></td><td>${x.time}</td><td><span class="font-black ${x.status==='DIBATALKAN'?'text-red-500':'text-emerald-500'}">${x.status || 'DISAHKAN'}</span></td><td class="uppercase font-bold text-slate-400">${x.unit}</td></tr>`).join('');
         }
 
         function loginAdmin() { if(document.getElementById('admin-pass').value === ADMIN_PASS) { isAdmin = true; document.getElementById('admin-login').classList.add('hidden'); document.getElementById('admin-panel').classList.remove('hidden'); renderAdminTable(); updateScoreboard(); } }
@@ -336,15 +319,11 @@
             const filterName = document.getElementById('admin-filter-name').value.toLowerCase();
             const filterStatus = document.getElementById('admin-filter-status').value;
             const tbody = document.getElementById('admin-table-body');
-            
             const filtered = allData.filter(x => {
                 const matchName = x.name.toLowerCase().includes(filterName);
-                const matchStatus = filterStatus === "" || 
-                                   (filterStatus === "AKTIF" && x.status !== "DIBATALKAN") || 
-                                   (filterStatus === "DIBATALKAN" && x.status === "DIBATALKAN");
+                const matchStatus = filterStatus === "" || (filterStatus === "AKTIF" && x.status !== "DIBATALKAN") || (filterStatus === "DIBATALKAN" && x.status === "DIBATALKAN");
                 return matchName && matchStatus;
             }).sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
-            
             tbody.innerHTML = filtered.map(x => `<tr><td class="font-bold uppercase text-[#1E3A5F]">${x.name}</td><td>${x.date}</td><td class="font-bold text-sky-600 uppercase text-[9px]">${x.room}</td><td class="truncate max-w-[100px]">${x.time}</td><td><span class="font-bold ${x.status==='DIBATALKAN'?'text-red-500':'text-emerald-500'}">${x.status || 'DISAHKAN'}</span></td><td>${x.status === 'DIBATALKAN' ? '-' : `<button onclick="askCancel('${x.id}')" class="text-red-500 font-bold hover:underline">BATAL</button>`}</td></tr>`).join('');
         }
 
@@ -366,5 +345,4 @@
         fetchData();
     </script>
 </body>
-
 </html>
