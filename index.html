@@ -14,17 +14,23 @@
         .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(14, 165, 233, 0.2); border-radius: 1rem; color: #1e293b; }
         .tab-active { border-bottom: 4px solid #0EA5E9; color: #0EA5E9; font-weight: 700; }
         
+        /* Calendar Styles */
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
         .day-cell { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: 0.5rem; font-size: 0.75rem; font-weight: 700; transition: all 0.2s; cursor: pointer; }
         
+        /* Time Slot Styles */
         .time-slot-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 8px; }
         .slot-available { background-color: #10B981; color: white; border: 1px solid #059669; }
+        .slot-available:hover { background-color: #059669; transform: scale(1.05); }
         .slot-full { background-color: #EF4444 !important; color: white !important; cursor: not-allowed !important; opacity: 0.8; border: 1px solid #b91c1c; position: relative; }
         .slot-full::after { content: "PENUH"; position: absolute; font-size: 7px; bottom: 1px; left: 50%; transform: translateX(-50%); font-weight: 900; }
-        .slot-selected { background-color: #0EA5E9 !important; ring: 3px solid #0369A1; transform: scale(1.05); }
+        .slot-selected { background-color: #0EA5E9 !important; color: white !important; ring: 3px solid #0369A1; transform: scale(1.05); }
 
+        /* Room Selection Styles */
         .room-murni { background-color: #fef3c7; border: 2px solid #f59e0b; color: #92400e; }
         .room-harmoni { background-color: #ede9fe; border: 2px solid #8b5cf6; color: #5b21b6; }
+        .room-makmal1 { background-color: #dbeafe; border: 2px solid #3b82f6; color: #1e3a8a; }
+        .room-makmal2 { background-color: #ccfbf1; border: 2px solid #0d9488; color: #115e59; }
 
         .slide-in { animation: slideIn 0.3s ease-out; }
         @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
@@ -32,23 +38,24 @@
 
         .custom-table th { background-color: #f8fafc; color: #475569; text-transform: uppercase; font-size: 0.65rem; font-weight: 800; padding: 12px; border-bottom: 2px solid #e2e8f0; }
         .custom-table td { padding: 10px; font-size: 0.75rem; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
-        #btn-submit:disabled { background-color: #94a3b8 !important; opacity: 0.5; cursor: not-allowed; }
+        
+        #btn-submit:disabled { background-color: #94a3b8 !important; opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
     </style>
 </head>
 <body class="no-scrollbar pb-10">
 
     <!-- HEADER -->
     <header class="bg-[#0F172A] border-b-4 border-[#0EA5E9] p-4 sticky top-0 z-50 shadow-2xl">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-4 text-center md:text-left">
-            <img src="https://i.postimg.cc/SN3YKfvk/smksi.png" alt="Logo SMKSI" class="h-auto w-20">
-            <div class="flex-1 text-white">
-                <h1 class="text-2xl font-bold tracking-tight">e-BOOKING Saujana</h1>
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-4 text-center md:text-left text-white">
+            <img src="https://i.postimg.cc/SN3YKfvk/smksi.png" alt="Logo SMKSI" class="h-16 w-16">
+            <div class="flex-1">
+                <h1 class="text-2xl font-bold tracking-tight ">e-BOOKING Saujana</h1>
                 <p class="text-[#0EA5E9] text-[10px] font-bold uppercase tracking-widest">SMK Saujana Impian</p>
             </div>
             <div class="flex bg-slate-800 rounded-lg p-1 shadow-inner font-bold">
-                <button onclick="switchTab('booking')" id="btn-tab-booking" class="px-5 py-2 rounded-md text-xs transition-all tab-active">📅 TEMPAH</button>
-                <button onclick="switchTab('schedule')" id="btn-tab-schedule" class="px-5 py-2 rounded-md text-xs transition-all text-gray-400">📋 JADUAL</button>
-                <button onclick="switchTab('admin')" id="btn-tab-admin" class="px-5 py-2 rounded-md text-xs transition-all text-gray-400">🔐 ADMIN</button>
+                <button onclick="switchTab('booking')" id="btn-tab-booking" class="px-5 py-2 rounded-md text-xs transition-all tab-active font-black">📅 TEMPAH</button>
+                <button onclick="switchTab('schedule')" id="btn-tab-schedule" class="px-5 py-2 rounded-md text-xs transition-all text-gray-400 font-black">📋 JADUAL</button>
+                <button onclick="switchTab('admin')" id="btn-tab-admin" class="px-5 py-2 rounded-md text-xs transition-all text-gray-400 font-black">🔐 ADMIN</button>
             </div>
         </div>
     </header>
@@ -60,9 +67,9 @@
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <!-- Kalendar -->
                 <div class="glass-card p-5 shadow-lg">
-                    <div class="flex justify-between items-center mb-4 text-slate-800">
+                    <div class="flex justify-between items-center mb-4 text-slate-800 border-b pb-2">
                         <button onclick="changeMonth(-1)" class="p-2 bg-slate-100 hover:bg-slate-200 rounded-full transition-colors font-bold">◀</button>
-                        <h2 id="calendar-month" class="font-bold text-lg text-[#1E3A5F] ">downloading...</h2>
+                        <h2 id="calendar-month" class="font-black text-lg text-[#1E3A5F] ">Memuatnaik...</h2>
                         <button onclick="changeMonth(1)" class="p-2 bg-slate-100 hover:bg-slate-200 rounded-full transition-colors font-bold">▶</button>
                     </div>
                     <div class="calendar-grid text-center text-[10px] font-bold text-gray-400 mb-2 uppercase font-black">
@@ -78,38 +85,46 @@
 
                 <!-- Bilik & Masa -->
                 <div class="glass-card p-5 shadow-lg flex flex-col">
-                    <h2 class="font-bold text-[#1E3A5F] mb-4 uppercase text-center border-b pb-2 tracking-widest">🏢 Pilihan Bilik</h2>
-                    <div class="space-y-3 mb-6 font-bold">
-                        <button onclick="selectRoom('Saujana Murni')" id="room-Murni" class="room-murni w-full p-4 rounded-xl text-left transition-all">
-                            <div class="font-bold text-lg tracking-tight">🏛️ Saujana Murni</div>
-                            <div class="text-[10px] uppercase opacity-80 font-black">Kapasiti: 50 Orang</div>
+                    <h2 class="font-bold text-[#1E3A5F] mb-4 uppercase text-center border-b pb-2 tracking-widest">🏢 PILIH BILIK</h2>
+                    <div class="grid grid-cols-1 gap-2 mb-6 font-bold">
+                        <button onclick="selectRoom('Saujana Murni')" id="room-Saujana-Murni" class="room-murni w-full p-3 rounded-xl text-left transition-all">
+                            <div class="font-bold text-base tracking-tight">🏛️ Saujana Murni</div>
+                            <div class="text-[10px] uppercase font-black opacity-70">Kapasiti: 50 Orang</div>
                         </button>
-                        <button onclick="selectRoom('Saujana Harmoni')" id="room-Harmoni" class="room-harmoni w-full p-4 rounded-xl text-left transition-all">
-                            <div class="font-bold text-lg tracking-tight">🏢 Saujana Harmoni</div>
-                            <div class="text-[10px] uppercase opacity-80 font-black">Kapasiti: 100 Orang</div>
+                        <button onclick="selectRoom('Saujana Harmoni')" id="room-Saujana-Harmoni" class="room-harmoni w-full p-3 rounded-xl text-left transition-all">
+                            <div class="font-bold text-base tracking-tight">🏢 Saujana Harmoni</div>
+                            <div class="text-[10px] uppercase font-black opacity-70">Kapasiti: 100 Orang</div>
+                        </button>
+                        <button onclick="selectRoom('Makmal Komputer 1')" id="room-Makmal-Komputer-1" class="room-makmal1 w-full p-3 rounded-xl text-left transition-all">
+                            <div class="font-bold text-base tracking-tight">💻 Makmal Komputer 1</div>
+                            <div class="text-[10px] uppercase font-black opacity-70">Kapasiti: 40 Orang</div>
+                        </button>
+                        <button onclick="selectRoom('Makmal Komputer 2')" id="room-Makmal-Komputer-2" class="room-makmal2 w-full p-3 rounded-xl text-left transition-all">
+                            <div class="font-bold text-base tracking-tight">💻 Makmal Komputer 2</div>
+                            <div class="text-[10px] uppercase font-black opacity-70">Kapasiti: 40 Orang</div>
                         </button>
                     </div>
-                    <div id="time-container" class="flex-1">
-                        <div id="time-hint" class="text-center py-10 bg-slate-50 rounded-xl border-2 border-dashed border-slate-200 text-sm italic text-slate-400">Pilih tarikh dan bilik</div>
+                    <div id="time-container" class="flex-1 text-slate-800 font-bold">
                         <div id="slot-grid" class="time-slot-grid hidden"></div>
+                        <div id="time-hint" class="text-center py-10 bg-slate-50 rounded-xl border-2 border-dashed text-sm italic text-slate-400">Pilih tarikh dan bilik</div>
                     </div>
                 </div>
 
                 <!-- Borang -->
                 <div class="glass-card p-5 shadow-lg">
-                    <h2 class="font-bold text-[#1E3A5F] mb-4 uppercase text-center border-b pb-2 tracking-widest">📝 Maklumat Guru</h2>
+                    <h2 class="font-bold text-[#1E3A5F] mb-4 uppercase text-center border-b pb-2 tracking-widest">📝 MAKLUMAT GURU</h2>
                     <form id="booking-form" class="space-y-4" oninput="validateBookingForm()">
                         <input type="text" id="form-name" required placeholder="NAMA PENUH" class="w-full p-3 border-2 border-slate-100 rounded-xl outline-none uppercase text-sm font-bold bg-white focus:border-sky-500 shadow-sm text-slate-800">
-                        <select id="form-purpose" required class="w-full p-3 border-2 border-slate-100 rounded-xl outline-none text-sm bg-white font-bold focus:border-sky-500 shadow-sm text-slate-800">
+                        <select id="form-purpose" required class="w-full p-3 border-2 border-slate-100 rounded-xl outline-none text-sm bg-white font-bold focus:border-sky-500 text-slate-800">
                             <option value="">-- PILIH TUJUAN --</option>
-                            <option>BENGKEL</option><option>CERAMAH</option><option>KARNIVAL</option><option>KELAS GANTI/TAMBAHAN</option><option>LATIHAN DALAM PERKHIDMATAN (LDP)</option><option>MAJLIS RASMI</option><option>MESYUARAT</option><option>PDPC</option><option>PEPERIKSAAN / PENTAKSIRAN</option><option>PERTANDINGAN</option><option>TAKLIMAT</option><option>LAIN-LAIN</option>
+                            <option>BENGKEL</option><option>CERAMAH</option><option>KARNIVAL</option><option>KELAS GANTI/TAMBAHAN</option><option>LDP</option><option>MAJLIS RASMI</option><option>MESYUARAT</option><option>PDPC</option><option>PEPERIKSAAN / PENTAKSIRAN</option><option>PERTANDINGAN</option><option>TAKLIMAT</option><option>LAIN-LAIN</option>
                         </select>
-                        <select id="form-unit" required class="w-full p-3 border-2 border-slate-100 rounded-xl outline-none text-sm bg-white font-bold focus:border-sky-500 shadow-sm text-slate-800">
+                        <select id="form-unit" required class="w-full p-3 border-2 border-slate-100 rounded-xl outline-none text-sm bg-white font-bold focus:border-sky-500 text-slate-800">
                             <option value="">-- PILIH UNIT/BIDANG --</option>
                             <option>PENGURUSAN</option><option>KURIKULUM</option><option>HEM</option><option>KOKURIKULUM</option><option>BAHASA</option><option>SAINS & MATEMATIK</option><option>TEKNIK & VOKASIONAL</option><option>KEMANUSIAN</option><option>ASK</option><option>BAHASA ARAB</option><option>BAHASA INGGERIS</option><option>BAHASA JERMAN</option><option>BAHASA MELAYU</option><option>BAHASA TAMIL</option><option>BIOLOGI</option><option>EKONOMI</option><option>FIZIK</option><option>GEOGRAFI</option><option>KMK</option><option>KIMIA</option><option>MATEMATIK</option><option>MATEMATIK TAMBAHAN</option><option>PENDIDIKAN AL QURAN & SUNNAH</option><option>PENDIDIKAN ISLAM</option><option>PENDIDIKAN MORAL</option><option>PENDIDIKAN SYARIAH ISLAMIAH</option><option>PERNIAGAAN</option><option>PJPK</option><option>PRINSIP PERAKAUNAN</option><option>PSV</option><option>RBT</option><option>SAINS</option><option>SAINS KOMPUTER</option><option>SAINS RUMAH TANGGA</option><option>SAINS SUKAN</option><option>SEJARAH</option><option>TASAWWUR ISLAM</option><option>LAIN-LAIN</option>
                         </select>
-                        <div id="booking-summary" class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                            <p id="summary-text" class="text-[10px] font-bold text-slate-400 uppercase italic text-center">Lengkapkan borang tempahan</p>
+                        <div id="booking-summary" class="bg-slate-50 p-3 rounded-xl border">
+                            <p id="summary-text" class="text-[10px] font-bold text-slate-400 uppercase italic text-center">Lengkapkan borang</p>
                         </div>
                         <button type="submit" id="btn-submit" disabled class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-4 rounded-xl shadow-lg transition-all active:scale-95">✅ SAHKAN TEMPAHAN</button>
                     </form>
@@ -119,7 +134,7 @@
 
         <!-- TAB 2: JADUAL -->
         <section id="tab-schedule" class="tab-content hidden slide-in text-slate-800">
-            <div class="glass-card p-4 mb-4 flex flex-col md:flex-row gap-4 shadow-md text-slate-800">
+            <div class="glass-card p-4 mb-4 flex flex-col md:flex-row gap-4 shadow-md">
                 <input type="text" id="filter-name" placeholder="🔍 Cari Nama Guru..." class="flex-1 p-3 border-2 border-slate-100 rounded-xl outline-none text-sm font-bold" oninput="renderScheduleTable()">
                 <select id="filter-unit" class="w-full md:w-64 p-3 border-2 border-slate-100 rounded-xl outline-none text-sm bg-white font-bold" onchange="renderScheduleTable()">
                     <option value="">-- SEMUA UNIT --</option>
@@ -138,51 +153,58 @@
         <section id="tab-admin" class="tab-content hidden slide-in text-slate-800">
             <div id="admin-login" class="max-w-md mx-auto glass-card p-10 text-center mt-10 shadow-2xl">
                 <div class="text-5xl mb-6">🔐</div>
-                <h2 class="font-black uppercase mb-4 text-[#1E3A5F]">Akses Pentadbir</h2>
+                <h2 class="font-black uppercase mb-4 text-[#1E3A5F] tracking-tighter">Akses Pentadbir</h2>
                 <input type="password" id="admin-pass" class="w-full p-4 border-2 rounded-xl mb-4 text-center font-bold tracking-widest outline-none focus:border-sky-500 shadow-inner" placeholder="••••">
-                <button onclick="loginAdmin()" class="w-full bg-[#1E3A5F] text-white font-bold py-4 rounded-xl shadow-lg hover:bg-slate-900 transition-all">LOG MASUK</button>
+                <button onclick="loginAdmin()" class="w-full bg-[#1E3A5F] text-white font-bold py-4 rounded-xl shadow-lg hover:bg-slate-900 transition-all uppercase font-black tracking-widest">Masuk</button>
             </div>
             <div id="admin-panel" class="hidden space-y-4">
                 <!-- Admin Scoreboard -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 text-center">
-                    <div class="glass-card p-6 border-b-4 border-sky-500 shadow-md"><p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Jumlah Aktif</p><p id="admin-stat-total" class="text-4xl font-black text-sky-600">0</p></div>
-                    <div class="glass-card p-6 border-b-4 border-amber-500 shadow-md"><p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Murni</p><p id="admin-stat-murni" class="text-4xl font-black text-amber-600">0</p></div>
-                    <div class="glass-card p-6 border-b-4 border-purple-500 shadow-md"><p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Harmoni</p><p id="admin-stat-harmoni" class="text-4xl font-black text-purple-600">0</p></div>
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6 text-center text-xs font-bold uppercase font-black">
+                    <div class="glass-card p-4 border-b-4 border-sky-500 shadow-md tracking-tighter text-[9px]">Aktif<br><span id="admin-stat-total" class="text-xl">0</span></div>
+                    <div class="glass-card p-4 border-b-4 border-amber-500 shadow-md tracking-tighter text-[9px]">Murni<br><span id="admin-stat-murni" class="text-xl">0</span></div>
+                    <div class="glass-card p-4 border-b-4 border-purple-500 shadow-md tracking-tighter text-[9px]">Harmoni<br><span id="admin-stat-harmoni" class="text-xl">0</span></div>
+                    <div class="glass-card p-4 border-b-4 border-blue-500 shadow-md tracking-tighter text-[9px]">Makmal 1<br><span id="admin-stat-makmal1" class="text-xl">0</span></div>
+                    <div class="glass-card p-4 border-b-4 border-teal-500 shadow-md tracking-tighter text-[9px]">Makmal 2<br><span id="admin-stat-makmal2" class="text-xl">0</span></div>
                 </div>
 
-                <div class="flex flex-col md:flex-row justify-between items-center bg-white/10 p-4 rounded-xl backdrop-blur-md border border-white/20 text-white font-bold gap-4">
+                <div class="flex flex-col md:flex-row justify-between items-center bg-white/10 p-4 rounded-xl backdrop-blur-md border border-white/20 text-white font-bold gap-4 shadow-xl">
                     <div class="flex flex-1 gap-2 w-full">
-                        <input type="text" id="admin-filter-name" placeholder="🔍 Tapis Nama..." class="flex-1 p-2 rounded-lg text-slate-800 text-xs outline-none" oninput="renderAdminTable()">
-                        <select id="admin-filter-status" class="p-2 rounded-lg text-slate-800 text-xs outline-none" onchange="renderAdminTable()">
+                        <input type="text" id="admin-filter-name" placeholder="🔍 Tapis Nama..." class="flex-1 p-2 rounded-lg text-slate-800 text-xs outline-none shadow-sm" oninput="renderAdminTable()">
+                        <select id="admin-filter-status" class="p-2 rounded-lg text-slate-800 text-xs outline-none shadow-sm" onchange="renderAdminTable()">
                             <option value="">SEMUA STATUS</option>
-                            <option value="AKTIF">AKTIF</option>
+                            <option value="DISAHKAN">DISAHKAN</option>
+                            <option value="Tunggu Pengesahan">TUNGGU PENGESAHAN</option>
                             <option value="DIBATALKAN">DIBATALKAN</option>
                         </select>
                     </div>
-                    <button onclick="logoutAdmin()" class="bg-red-500 px-6 py-2 rounded-lg font-black shadow-lg uppercase text-xs hover:bg-red-600 transition-colors">Keluar</button>
+                    <div class="flex gap-2">
+                        <a href="https://docs.google.com/spreadsheets/d/1K5QbT5S7VMJ3DOyHHnIwRVHZ_BGVKcJSLdWZh2Lu48o/edit" target="_blank" class="bg-emerald-600 px-4 py-2 rounded-lg text-[10px] uppercase font-black transition-all hover:bg-emerald-700">📊 Google Sheet</a>
+                        <button onclick="logoutAdmin()" class="bg-red-500 px-4 py-2 rounded-lg text-[10px] uppercase font-black transition-all hover:bg-red-600">Keluar</button>
+                    </div>
                 </div>
-                <div class="glass-card p-6 overflow-x-auto no-scrollbar shadow-xl">
-                    <table class="w-full text-left text-[11px]">
-                        <thead class="bg-slate-100 uppercase font-black text-slate-500"><tr><th>Guru</th><th>Tarikh</th><th>Bilik</th><th>Masa</th><th>Status</th><th>Aksi</th></tr></thead>
-                        <tbody id="admin-table-body" class="divide-y text-slate-700"></tbody>
+                <div class="glass-card p-6 overflow-x-auto shadow-xl">
+                    <table class="w-full text-left text-[10px]">
+                        <thead class="bg-slate-100 uppercase font-black text-slate-500"><tr><th>Nama Guru</th><th>Tarikh</th><th>Bilik</th><th>Masa</th><th>Status</th><th>Aksi</th></tr></thead>
+                        <tbody id="admin-table-body" class="divide-y text-slate-700 font-bold"></tbody>
                     </table>
                 </div>
             </div>
         </section>
     </main>
 
-    <footer class="fixed bottom-0 w-full bg-[#0F172A] p-4 text-center border-t border-sky-900 z-40 text-sky-400">
-        <p class="text-[9px] font-bold uppercase tracking-[0.2em]">🚀 Powered by mai_apps | SMK Saujana Impian</p>
+    <footer class="fixed bottom-0 w-full bg-[#0F172A] p-4 text-center border-t border-sky-900 z-40 text-sky-400 font-black">
+        <p class="text-[9px] uppercase tracking-[0.2em]">🚀 Powered by mai_apps | SMK Saujana Impian</p>
     </footer>
 
     <!-- MODAL -->
-    <div id="modal-container" class="fixed inset-0 bg-black/70 z-[100] flex items-center justify-center p-4 hidden">
-        <div class="bg-white rounded-3xl p-8 max-w-sm w-full text-center shadow-2xl slide-in text-slate-800 font-bold">
-            <h3 id="modal-title" class="text-2xl font-black mb-2 uppercase">Mesej</h3>
+    <div id="modal-container" class="fixed inset-0 bg-black/70 z-[100] flex items-center justify-center p-4 hidden text-slate-800">
+        <div class="bg-white rounded-3xl p-8 max-w-sm w-full text-center shadow-2xl slide-in font-bold">
+            <h3 id="modal-title" class="text-2xl font-black mb-2 uppercase tracking-tighter">Mesej</h3>
             <p id="modal-msg" class="text-slate-500 text-sm mb-8 leading-relaxed font-medium"></p>
             <div class="flex gap-3">
-                <button onclick="closeModal()" class="flex-1 py-3 bg-slate-100 text-slate-600 rounded-2xl font-bold uppercase text-xs">Tutup</button>
-                <button id="modal-confirm-btn" class="flex-1 py-3 bg-red-500 text-white rounded-2xl font-bold hidden shadow-lg uppercase text-xs">SAHKAN BATAL</button>
+                <button onclick="closeModal()" id="modal-close-btn" class="flex-1 py-3 bg-slate-100 text-slate-600 rounded-2xl font-bold uppercase text-xs">Tutup</button>
+                <button id="modal-confirm-btn" class="flex-1 py-3 bg-red-500 text-white rounded-2xl font-bold hidden shadow-lg uppercase text-xs">Sah Batal</button>
+                <button id="modal-approve-btn" class="flex-1 py-3 bg-sky-600 text-white rounded-2xl font-bold hidden shadow-lg uppercase text-xs">Sahkan</button>
             </div>
         </div>
     </div>
@@ -227,7 +249,7 @@
                 const totalActiveOnDay = allData.filter(x => x.date.toString().trim() === dStr && x.status !== "DIBATALKAN").length;
                 let bg = 'bg-emerald-50 text-emerald-600', cur = 'cursor-pointer', click = `onclick="selectDate('${dStr}')"`;
                 if(isPast || isFar) { bg = 'bg-slate-100 text-slate-300'; cur = 'cursor-not-allowed'; click = ''; }
-                else if(totalActiveOnDay >= 48) bg = 'bg-red-100 text-red-500';
+                else if(totalActiveOnDay >= 96) bg = 'bg-red-100 text-red-500';
                 if(selectedDate === dStr) bg = 'bg-sky-500 text-white shadow-lg scale-110 z-10';
                 container.innerHTML += `<div ${click} class="day-cell ${bg} ${cur}">${d}</div>`;
             }
@@ -235,14 +257,25 @@
 
         function selectDate(d) { selectedDate = d; selectedSlots = []; renderUI(); }
         function changeMonth(dir) { currentCalDate.setMonth(currentCalDate.getMonth() + dir); renderCalendar(); }
-        function selectRoom(r) { selectedRoom = r; selectedSlots = []; document.getElementById('time-hint').classList.add('hidden'); document.getElementById('slot-grid').classList.remove('hidden'); ['Murni', 'Harmoni'].forEach(id => document.getElementById(`room-${id}`).classList.toggle('ring-4', r.includes(id))); renderUI(); }
+        function selectRoom(r) { 
+            selectedRoom = r; selectedSlots = []; 
+            document.getElementById('time-hint').classList.add('hidden');
+            document.getElementById('slot-grid').classList.remove('hidden');
+            ['Saujana-Murni', 'Saujana-Harmoni', 'Makmal-Komputer-1', 'Makmal-Komputer-2'].forEach(id => {
+                const cleanId = r.replace(/ /g, "-");
+                document.getElementById(`room-${id}`).classList.toggle('ring-4', id === cleanId);
+            });
+            renderUI(); 
+        }
 
         function renderSlots() {
             const grid = document.getElementById('slot-grid');
             grid.innerHTML = '';
             if(!selectedDate || !selectedRoom) return;
             HOURS.forEach(slot => {
-                const isTaken = allData.some(x => x.status !== "DIBATALKAN" && x.date === selectedDate && x.room === selectedRoom && x.time.toString().split(', ').includes(slot));
+                const isTaken = allData.some(x => 
+                    x.status !== "DIBATALKAN" && x.date === selectedDate && x.room === selectedRoom && x.time.toString().split(', ').includes(slot)
+                );
                 const isSelected = selectedSlots.includes(slot);
                 let cls = isTaken ? 'slot-full' : (isSelected ? 'slot-selected' : 'slot-available');
                 let click = isTaken ? '' : `onclick="toggleSlot('${slot}')"`;
@@ -271,20 +304,26 @@
             if(!selectedDate) txt.innerText = "⚠️ Pilih Tarikh";
             else if(!selectedRoom) txt.innerText = "⚠️ Pilih Bilik";
             else if(selectedSlots.length === 0) txt.innerText = "⚠️ Pilih Slot";
-            else txt.innerHTML = `<span class="text-sky-600 font-black text-[11px]">${selectedDate} | ${selectedRoom}</span><br><span class="text-emerald-600 font-black">${selectedSlots.length} SLOT PILIHAN</span>`;
+            else txt.innerHTML = `<span class="text-sky-600 font-black text-[11px] uppercase">${selectedDate} | ${selectedRoom}</span><br><span class="text-emerald-600 font-black tracking-tight">${selectedSlots.length} SLOT PILIHAN</span>`;
         }
 
         document.getElementById('booking-form').onsubmit = async (e) => {
             e.preventDefault();
             const btn = document.getElementById('btn-submit');
             const name = document.getElementById('form-name').value.toUpperCase();
+            const monthYear = selectedDate.substring(3);
+            const monthlyCount = allData.filter(x => x.name === name && x.date.includes(monthYear) && x.status !== "DIBATALKAN").length;
+            if(monthlyCount >= 4) return showModal("⚠️ Had", "Maksimum 4 tempahan sebulan bagi setiap nama guru.");
+            
             btn.disabled = true; btn.innerText = "MENYIMPAN...";
             const payload = { action: "CREATE", data: { id: Date.now().toString(), name: name, date: selectedDate, room: selectedRoom, time: selectedSlots.join(', '), timeSlots: selectedSlots.length, purpose: document.getElementById('form-purpose').value, unit: document.getElementById('form-unit').value, createdAt: new Date().toISOString() } };
             try {
                 const res = await fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify(payload) });
                 const result = await res.json();
-                if(result.isOk) { showModal("✅ Berjaya", "Tempahan disimpan!"); resetForm(); fetchData(); }
-                else { showModal("❌ Gagal", result.msg || "Slot sudah diambil."); fetchData(); }
+                if(result.isOk) { 
+                    showModal("✅ Berjaya", "Tempahan anda telah direkodkan ke dalam sistem.");
+                    resetForm(); fetchData(); 
+                }
             } catch (e) { showModal("❌ Ralat", "Masalah sambungan dikesan."); }
             finally { btn.innerText = "✅ SAHKAN TEMPAHAN"; validateBookingForm(); }
         };
@@ -292,14 +331,13 @@
         function resetForm() { document.getElementById('booking-form').reset(); selectedDate = null; selectedRoom = null; selectedSlots = []; document.getElementById('slot-grid').classList.add('hidden'); document.getElementById('time-hint').classList.remove('hidden'); renderUI(); }
         
         function updateScoreboard() { 
-            const active = allData.filter(x => x.status !== "DIBATALKAN");
-            const total = active.length;
-            const murni = active.filter(x => x.room === 'Saujana Murni').length;
-            const harmoni = active.filter(x => x.room === 'Saujana Harmoni').length;
+            const active = allData.filter(x => x.status === "DISAHKAN" || x.status === "Tunggu Pengesahan");
             if (document.getElementById('admin-stat-total')) {
-                document.getElementById('admin-stat-total').innerText = total;
-                document.getElementById('admin-stat-murni').innerText = murni;
-                document.getElementById('admin-stat-harmoni').innerText = harmoni;
+                document.getElementById('admin-stat-total').innerText = active.length;
+                document.getElementById('admin-stat-murni').innerText = active.filter(x => x.room === 'Saujana Murni').length;
+                document.getElementById('admin-stat-harmoni').innerText = active.filter(x => x.room === 'Saujana Harmoni').length;
+                document.getElementById('admin-stat-makmal1').innerText = active.filter(x => x.room === 'Makmal Komputer 1').length;
+                document.getElementById('admin-stat-makmal2').innerText = active.filter(x => x.room === 'Makmal Komputer 2').length;
             }
         }
         
@@ -308,7 +346,7 @@
             const nameF = document.getElementById('filter-name').value.toLowerCase();
             const unitF = document.getElementById('filter-unit').value;
             const filtered = allData.filter(x => x.name.toLowerCase().includes(nameF) && (unitF === "" || x.unit === unitF)).sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
-            tbody.innerHTML = filtered.map((x, i) => `<tr><td>${i+1}</td><td class="font-bold uppercase text-slate-800">${x.name}</td><td>${x.date}</td><td><span class="px-2 py-1 rounded text-[9px] font-bold ${x.room==='Saujana Murni'?'room-murni':'room-harmoni'} uppercase">${x.room}</span></td><td>${x.time}</td><td><span class="font-black ${x.status==='DIBATALKAN'?'text-red-500':'text-emerald-500'}">${x.status || 'DISAHKAN'}</span></td><td class="uppercase font-bold text-slate-400">${x.unit}</td></tr>`).join('');
+            tbody.innerHTML = filtered.map((x, i) => `<tr><td>${i+1}</td><td class="font-bold uppercase text-slate-800">${x.name}</td><td>${x.date}</td><td><span class="px-2 py-1 rounded text-[8px] font-bold ${x.room.includes('Murni')?'room-murni':x.room.includes('Harmoni')?'room-harmoni':x.room.includes('1')?'room-makmal1':'room-makmal2'} uppercase text-nowrap">${x.room}</span></td><td>${x.time}</td><td><span class="font-black text-[10px] ${x.status==='DIBATALKAN'?'text-red-500':x.status==='DISAHKAN'?'text-emerald-500':'text-amber-500'} uppercase">${x.status}</span></td><td class="uppercase font-bold text-slate-400 uppercase tracking-tighter">${x.unit}</td></tr>`).join('');
         }
 
         function loginAdmin() { if(document.getElementById('admin-pass').value === ADMIN_PASS) { isAdmin = true; document.getElementById('admin-login').classList.add('hidden'); document.getElementById('admin-panel').classList.remove('hidden'); renderAdminTable(); updateScoreboard(); } }
@@ -321,30 +359,44 @@
             const tbody = document.getElementById('admin-table-body');
             const filtered = allData.filter(x => {
                 const matchName = x.name.toLowerCase().includes(filterName);
-                const matchStatus = filterStatus === "" || (filterStatus === "AKTIF" && x.status !== "DIBATALKAN") || (filterStatus === "DIBATALKAN" && x.status === "DIBATALKAN");
+                const matchStatus = filterStatus === "" || x.status === filterStatus;
                 return matchName && matchStatus;
             }).sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
-            tbody.innerHTML = filtered.map(x => `<tr><td class="font-bold uppercase text-[#1E3A5F]">${x.name}</td><td>${x.date}</td><td class="font-bold text-sky-600 uppercase text-[9px]">${x.room}</td><td class="truncate max-w-[100px]">${x.time}</td><td><span class="font-bold ${x.status==='DIBATALKAN'?'text-red-500':'text-emerald-500'}">${x.status || 'DISAHKAN'}</span></td><td>${x.status === 'DIBATALKAN' ? '-' : `<button onclick="askCancel('${x.id}')" class="text-red-500 font-bold hover:underline">BATAL</button>`}</td></tr>`).join('');
+
+            tbody.innerHTML = filtered.map(x => {
+                let btns = ``;
+                if(x.status === "Tunggu Pengesahan") btns += `<button onclick="askConfirm('${x.id}')" class="text-sky-600 font-black hover:underline mr-3 uppercase text-[10px]">Sahkan</button>`;
+                if(x.status !== "DIBATALKAN") btns += `<button onclick="askCancel('${x.id}')" class="text-red-500 font-bold hover:underline uppercase text-[10px]">Batal</button>`;
+                else btns = `-`;
+                return `<tr><td class="font-bold uppercase text-[#1E3A5F]">${x.name}</td><td>${x.date}</td><td class="font-bold uppercase text-[9px]">${x.room}</td><td class="truncate max-w-[100px]">${x.time}</td><td><span class="font-bold ${x.status==='DIBATALKAN'?'text-red-500':x.status==='DISAHKAN'?'text-emerald-500':'text-amber-500'} text-[10px] uppercase font-black">${x.status}</span></td><td><div class="flex">${btns}</div></td></tr>`;
+            }).join('');
         }
 
-        let cancelId = null;
-        function askCancel(id) { cancelId = id; showModal('⚠️ Pembatalan', 'Batal tempahan ini? Slot akan dibuka semula.', 'text-slate-800', true); }
-        async function confirmCancel() {
+        let targetId = null;
+        function askCancel(id) { targetId = id; showModal('⚠️ Pembatalan', 'Batal tempahan ini?', 'text-red-600', 'cancel'); }
+        function askConfirm(id) { targetId = id; showModal('✅ Pengesahan', 'Sahkan tempahan Makmal Komputer ini?', 'text-sky-700', 'approve'); }
+
+        async function processAction(action) {
             closeModal();
             try {
-                const response = await fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify({action: "CANCEL", id: cancelId}) });
+                const response = await fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify({action: action, id: targetId}) });
                 const result = await response.json();
-                if(result.isOk) { showModal('✅ Selesai', 'Tempahan DIBATALKAN.'); fetchData(); }
+                if(result.isOk) { showModal('✅ Berjaya', 'Data telah dikemaskini.'); fetchData(); }
             } catch(e) { showModal('❌ Ralat', 'Masalah sambungan.'); }
         }
 
-        function switchTab(id) { document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden')); document.getElementById(`tab-${id}`).classList.remove('hidden'); ['booking','schedule','admin'].forEach(t => document.getElementById('btn-tab-'+t).className = (t===id) ? "px-5 py-2 rounded-md text-xs font-bold transition-all tab-active shadow-md" : "px-5 py-2 rounded-md text-xs font-bold transition-all text-gray-400"); if(id === 'schedule') renderScheduleTable(); if(id==='admin' && isAdmin) renderAdminTable(); }
+        function switchTab(id) { document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden')); document.getElementById(`tab-${id}`).classList.remove('hidden'); ['booking','schedule','admin'].forEach(t => document.getElementById('btn-tab-'+t).className = (t===id) ? "px-5 py-2 rounded-md text-xs transition-all tab-active shadow-md font-black" : "px-5 py-2 rounded-md text-xs transition-all text-gray-400 font-black"); if(id === 'schedule') renderScheduleTable(); if(id==='admin' && isAdmin) renderAdminTable(); }
         function formatDate(d) { return `${d.getDate().toString().padStart(2,'0')}/${(d.getMonth()+1).toString().padStart(2,'0')}/${d.getFullYear()}`; }
-        function showModal(t, m, c = 'text-slate-800', confirm = false) { document.getElementById('modal-title').innerText = t; document.getElementById('modal-title').className = `text-2xl font-bold mb-2 ${c}`; document.getElementById('modal-msg').innerText = m; const b = document.getElementById('modal-confirm-btn'); if(confirm) { b.classList.remove('hidden'); b.onclick = confirmCancel; } else b.classList.add('hidden'); document.getElementById('modal-container').classList.remove('hidden'); }
+        function showModal(t, m, c, mode = 'none') { 
+            document.getElementById('modal-title').innerText = t; document.getElementById('modal-title').className = `text-2xl font-black mb-2 uppercase tracking-tighter ${c}`; document.getElementById('modal-msg').innerText = m; 
+            const bCancel = document.getElementById('modal-confirm-btn'); const bApprove = document.getElementById('modal-approve-btn');
+            bCancel.classList.add('hidden'); bApprove.classList.add('hidden');
+            if(mode === 'cancel') { bCancel.classList.remove('hidden'); bCancel.onclick = () => processAction('CANCEL'); }
+            if(mode === 'approve') { bApprove.classList.remove('hidden'); bApprove.onclick = () => processAction('CONFIRM'); }
+            document.getElementById('modal-container').classList.remove('hidden'); 
+        }
         function closeModal() { document.getElementById('modal-container').classList.add('hidden'); }
         fetchData();
     </script>
 </body>
 </html>
-
-
